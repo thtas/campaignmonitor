@@ -1,0 +1,5 @@
+campaignmonitor.settings:
+  title: 'Campaign Monitor'
+  description: 'Configureation area for Campaign Monitor'
+  route_name: campaignmonitor.settings
+  parent: 'system.admin_config_services'

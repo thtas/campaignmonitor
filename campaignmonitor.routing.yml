@@ -1,0 +1,7 @@
+campaignmonitor.settings:
+  path: '/admin/config/services/campaignmonitor'
+  defaults:
+    _form: '\Drupal\campaignmonitor\Form\SettingsForm'
+    _title: 'Campaign Monitor Settings'
+  requirements:
+    _permission: 'administer site configuration'
