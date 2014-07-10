@@ -4,4 +4,4 @@ campaignmonitor.settings:
     _form: '\Drupal\campaignmonitor\Form\SettingsForm'
     _title: 'Campaign Monitor Settings'
   requirements:
-    _permission: 'administer site configuration'
+    _permission: 'administer campaignmonitor'
