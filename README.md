@@ -2,6 +2,7 @@ campaignmonitor-8.x-dev
 =======================
 
 Work in progress for the Drupal 8 version of https://www.drupal.org/project/campaignmonitor
+Drupal.org issue https://www.drupal.org/node/2300625
 
 Notes:
 
