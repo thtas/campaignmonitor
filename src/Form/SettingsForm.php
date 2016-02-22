@@ -2,8 +2,12 @@
 
 namespace Drupal\campaignmonitor\Form;
 
-use Drupal\Core\Form\ConfigFormBase;
 use Drupal\campaignmonitor\CampaignMonitor;
+
+use Drupal\Core\Form\ConfigFormBase;
+use Drupal\Core\Form\FormStateInterface;
+use Drupal\Core\Render\Element;
+
 
 class SettingsForm extends ConfigFormBase {
 
@@ -11,13 +15,13 @@ class SettingsForm extends ConfigFormBase {
     return 'campaignmonitor_admin_settings_form';
   }
   
-  protected function actions(array $form, array &$form_state) {
+  protected function actions(array &$form, FormStateInterface $form_state) {
     $element = parent::actions($form, $form_state);
     drupal_set_message('<pre>'.print_r($element,true).'</pre>');
     return $element;
   }
   
-  public function buildForm(array $form, array &$form_state) {       
+  public function buildForm(array &$form, FormStateInterface $form_state) {       
     
   // Get account details.
   $account = $this->config('campaignmonitor.account');
@@ -118,13 +122,13 @@ class SettingsForm extends ConfigFormBase {
   /**
    * Clears the caches.
    */
-  public function submitCacheClear(array &$form, array &$form_state) {    
+  public function submitCacheClear(array &$form, FormStateInterface $form_state) {    
      CampaignMonitor::getConnector()->clearCache();
     drupal_set_message(t('Caches cleared.'));
   }
   
   
-  public function submitForm(array &$form, array &$form_state) {
+  public function submitForm(array &$form, FormStateInterface $form_state) {
         
     $this->config('campaignmonitor.account')
       ->set('api_key', $form_state['values']['campaignmonitor_account']['api_key'])     

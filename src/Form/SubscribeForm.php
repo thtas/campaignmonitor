@@ -2,8 +2,11 @@
 
 namespace Drupal\campaignmonitor\Form;
 
-use Drupal\Core\Form\FormBase;
 use Drupal\campaignmonitor\CampaignMonitor;
+
+use Drupal\Core\Form\FormBase;
+use Drupal\Core\Form\FormStateInterface;
+use Drupal\Core\Render\Element;
 
 class SubscribeForm extends FormBase {
 
@@ -11,7 +14,7 @@ class SubscribeForm extends FormBase {
     return 'campaignmonitor_admin_settings_form';
   }
   
-  public function buildForm(array $form, array &$form_state) {
+  public function buildForm(array &$form, FormStateInterface $form_state) {
     
     $enabled_lists = array();
     if(isset($form_state['build_info']['args'][0]['enabled_lists'])) {
@@ -39,11 +42,11 @@ class SubscribeForm extends FormBase {
     return $form;
   }
   
-  public function validateForm(array &$form, array &$form_state) {
+  public function validateForm(array &$form, FormStateInterface $form_state) {
 
   }
   
-  public function submitForm(array &$form, array &$form_state) {    
+  public function submitForm(array &$form, FormStateInterface $form_state) {    
     
     foreach($form_state['values']['lists'] as $list_id) {
       
