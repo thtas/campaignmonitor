@@ -148,17 +148,20 @@ class SettingsForm extends ConfigFormBase {
    * {@inheritdoc}
    */
   public function submitForm(array &$form, FormStateInterface $form_state) {
+    $config = $this->config('campaignmonitor.account');
+    $values = $form_state->getValues();
+
     $this->config('campaignmonitor.account')
-      ->set('api_key', $form_state['values']['campaignmonitor_account']['api_key'])     
-      ->set('client_id', $form_state['values']['campaignmonitor_account']['client_id'])     
+      ->set('api_key', $values['campaignmonitor_account']['api_key'])
+      ->set('client_id', $values['campaignmonitor_account']['client_id'])
       ->save();
-    
+
     $this->config('campaignmonitor.general')
-      ->set('cache_timeout', $form_state['values']['campaignmonitor_general']['cache_timeout'])     
-      ->set('library_path', $form_state['values']['campaignmonitor_general']['library_path'])     
-      ->set('archive', $form_state['values']['campaignmonitor_general']['archive'])     
-      ->set('logging', $form_state['values']['campaignmonitor_general']['logging'])     
-      ->set('instructions', $form_state['values']['campaignmonitor_general']['instructions'])     
+      ->set('cache_timeout', $values['values']['campaignmonitor_general']['cache_timeout'])     
+      ->set('library_path', $values['values']['campaignmonitor_general']['library_path'])     
+      ->set('archive', $values['values']['campaignmonitor_general']['archive'])     
+      ->set('logging', $values['values']['campaignmonitor_general']['logging'])     
+      ->set('instructions', $values['values']['campaignmonitor_general']['instructions'])     
       ->save();
           
     CampaignMonitor::getConnector()->clearCache();
