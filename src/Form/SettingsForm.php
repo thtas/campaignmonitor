@@ -51,7 +51,7 @@ class SettingsForm extends ConfigFormBase {
   $form['campaignmonitor_account'] = array(
     '#type' => 'fieldset',
     '#title' => t('Account details'),
-    '#description' => t('Enter your Campaign Monitor account information. See !link for more information.', array('!link' => l(t('the Campaign Monitor API documentation'), 'http://www.campaignmonitor.com/api/required/'))),
+    '#description' => t('Enter your Campaign Monitor account information.'),
     '#collapsible' => empty($account) ? FALSE : TRUE,
     '#collapsed' => empty($account) ? FALSE : TRUE,
     '#tree' => TRUE,
