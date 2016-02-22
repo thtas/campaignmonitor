@@ -10,18 +10,35 @@ use Drupal\Core\Render\Element;
 
 
 class SettingsForm extends ConfigFormBase {
-
+  /** 
+   * {@inheritdoc}
+   */
   public function getFormID() {
     return 'campaignmonitor_admin_settings_form';
   }
   
-  protected function actions(array &$form, FormStateInterface $form_state) {
+  /** 
+   * {@inheritdoc}
+   */
+  protected function actions(array $form, FormStateInterface $form_state) {
     $element = parent::actions($form, $form_state);
     drupal_set_message('<pre>'.print_r($element,true).'</pre>');
     return $element;
   }
-  
-  public function buildForm(array &$form, FormStateInterface $form_state) {       
+
+  /** 
+   * {@inheritdoc}
+   */
+  protected function getEditableConfigNames() {
+    return [
+      'campaignmonitor.account',
+    ];
+  }
+
+  /** 
+   * {@inheritdoc}
+   */
+  public function buildForm(array $form, FormStateInterface $form_state) {       
     
   // Get account details.
   $account = $this->config('campaignmonitor.account');
@@ -118,18 +135,19 @@ class SettingsForm extends ConfigFormBase {
     
     return parent::buildForm($form, $form_state);
   }
-  
+
   /**
    * Clears the caches.
    */
-  public function submitCacheClear(array &$form, FormStateInterface $form_state) {    
+  public function submitCacheClear(array $form, FormStateInterface $form_state) {    
      CampaignMonitor::getConnector()->clearCache();
     drupal_set_message(t('Caches cleared.'));
   }
-  
-  
+
+  /** 
+   * {@inheritdoc}
+   */
   public function submitForm(array &$form, FormStateInterface $form_state) {
-        
     $this->config('campaignmonitor.account')
       ->set('api_key', $form_state['values']['campaignmonitor_account']['api_key'])     
       ->set('client_id', $form_state['values']['campaignmonitor_account']['client_id'])     
@@ -145,5 +163,4 @@ class SettingsForm extends ConfigFormBase {
           
     CampaignMonitor::getConnector()->clearCache();
   }
-
 }

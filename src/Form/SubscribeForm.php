@@ -9,12 +9,17 @@ use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Render\Element;
 
 class SubscribeForm extends FormBase {
-
+  /** 
+   * {@inheritdoc}
+   */
   public function getFormID() {
     return 'campaignmonitor_admin_settings_form';
   }
-  
-  public function buildForm(array &$form, FormStateInterface $form_state) {
+
+  /** 
+   * {@inheritdoc}
+   */
+  public function buildForm(array $form, FormStateInterface $form_state) {
     
     $enabled_lists = array();
     if(isset($form_state['build_info']['args'][0]['enabled_lists'])) {
@@ -41,13 +46,18 @@ class SubscribeForm extends FormBase {
     
     return $form;
   }
-  
-  public function validateForm(array &$form, FormStateInterface $form_state) {
+
+  /** 
+   * {@inheritdoc}
+   */
+  public function validateForm(array $form, FormStateInterface $form_state) {
 
   }
   
-  public function submitForm(array &$form, FormStateInterface $form_state) {    
-    
+  /** 
+   * {@inheritdoc}
+   */
+  public function submitForm(array &$form, FormStateInterface $form_state) {
     foreach($form_state['values']['lists'] as $list_id) {
       
       if(!$list_id) {
@@ -75,5 +85,4 @@ class SubscribeForm extends FormBase {
     
     }    
   }
-
 }
