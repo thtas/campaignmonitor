@@ -28,9 +28,8 @@ class SubscribeForm extends FormBase {
     }
 
     $form['email'] = array(
-      '#title' => 'eMail',
+      '#title' => 'Email',
       '#type' => 'textfield', 
-      '#element_validate' => array('form_validate_email'),     
     );
     
     $form['lists'] = array(
