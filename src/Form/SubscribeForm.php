@@ -20,8 +20,8 @@ class SubscribeForm extends FormBase {
    * {@inheritdoc}
    */
   public function buildForm(array $form, FormStateInterface $form_state) {
-    $values = $form_state->getValues();
-
+    $values = $form_state->getBuildInfo();
+    $values = $values['args'][0];
     $enabled_lists = array();
     if(isset($values['enabled_lists'])) {
       $enabled_lists = $values['enabled_lists'];
