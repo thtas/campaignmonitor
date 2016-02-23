@@ -104,7 +104,7 @@ class SettingsForm extends ConfigFormBase {
         '#type' => 'textfield',
         '#title' => t('Library path'),
         '#description' => t('The installation path of the Campaign Monitor library, relative to the Drupal root.'),
-        '#default_value' => $library_path ? $library_path : $general->get('library_path'),
+        '#default_value' => $general->get('library_path'),
       );
 
       $form['campaignmonitor_general']['archive'] = array(
