@@ -9,7 +9,10 @@ namespace Drupal\campaignmonitor\Plugin\Block;
 
 use Drupal\Core\Block\BlockBase;
 use Drupal\Core\Block\BlockPluginInterface;
+use Drupal\Core\Form\FormBuilder;
 use Drupal\Core\Form\FormStateInterface;
+use Symfony\Component\DependencyInjection\ContainerInterface;
+use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
 use Drupal\campaignmonitor\CampaignMonitor;
 
 /**
@@ -23,11 +26,30 @@ use Drupal\campaignmonitor\CampaignMonitor;
 class SubscribeBlock extends BlockBase implements BlockPluginInterface {
 
   /**
+   * The campaign monitor.
+   *
+   * @var \Drupal\campaignmonitor\CampaignMonitor
+   */
+  protected $campaignMonitor;
+
+
+  /**
+   * Constructs a new SubscribeBlock.
+   */
+  public function __construct(array $configuration, $plugin_id, $plugin_definition) {
+    parent::__construct($configuration, $plugin_id, $plugin_definition);
+    $this->setConfiguration($configuration);
+    $this->campaignMonitor = CampaignMonitor::GetConnector();
+  }
+
+  /**
    * {@inheritdoc}
    */
   public function blockForm($form, FormStateInterface $form_state) {
+    $form = parent::blockForm($form, $form_state);
+
     $config = $this->getConfiguration();    
-    $cm = CampaignMonitor::getConnector();
+    $cm = $this->campaignMonitor;
     $lists = array();
 
     foreach($cm->getLists() as $list_id => $info) {
@@ -66,7 +88,7 @@ class SubscribeBlock extends BlockBase implements BlockPluginInterface {
     $config = $this->getConfiguration();   
     $list_status = isset($config['list_status'])?$config['list_status']:array();            
     $prefix = isset($config['prefix'])?$config['prefix']:array();            
-    $cm = CampaignMonitor::getConnector();
+    $cm = $this->campaignMonitor;
     $lists = $cm->getLists();
 
     $enabled_lists = array();

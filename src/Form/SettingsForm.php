@@ -9,10 +9,11 @@ namespace Drupal\campaignmonitor\Form;
 
 use Drupal;
 use Drupal\Core\Form\ConfigFormBase;
-use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Render\Element;
 use Symfony\Component\DependencyInjection\ContainerInterface;
-
+use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
+use Drupal\Core\Form\FormBase;
+use Drupal\Core\Form\FormStateInterface;
 use Drupal\campaignmonitor\CampaignMonitor;
 
 
@@ -24,6 +25,28 @@ use Drupal\campaignmonitor\CampaignMonitor;
  * @package Drupal\campaignmonitor\Form
  */
 class SettingsForm extends ConfigFormBase {
+
+  /**
+   * The campaign monitor.
+   *
+   * @var \Drupal\campaignmonitor\CampaignMonitor
+   */
+  protected $campaignMonitor;
+
+
+  /**
+   * Constructs a new SubscribeForm.
+   */
+  public function __construct() {
+    $this->campaignMonitor = CampaignMonitor::GetConnector();
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public static function create(ContainerInterface $container) {
+    return new static();
+  }
 
   /** 
    * {@inheritdoc}
@@ -55,7 +78,7 @@ class SettingsForm extends ConfigFormBase {
 
     // Test if the library has been installed. If it has not been installed an
     // error message will be shown.
-    $cm = CampaignMonitor::getConnector();
+    $cm = $this->campaignMonitor;
     $library_path = $cm->getLibraryPath();
 
     $form['campaignmonitor_account'] = array(
@@ -149,7 +172,7 @@ class SettingsForm extends ConfigFormBase {
    * Clears the caches.
    */
   public function submitCacheClear(array $form, FormStateInterface $form_state) {    
-    CampaignMonitor::getConnector()->clearCache();
+    $this->campaignMonitor->clearCache();
     drupal_set_message(t('Caches cleared.'));
   }
 
@@ -172,6 +195,6 @@ class SettingsForm extends ConfigFormBase {
       ->set('instructions', $values['campaignmonitor_general']['instructions'])
       ->save();
 
-    CampaignMonitor::getConnector()->clearCache();
+    $this->campaignMonitor->clearCache();
   }
 }

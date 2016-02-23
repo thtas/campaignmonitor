@@ -3,12 +3,45 @@
 namespace Drupal\campaignmonitor\Form;
 
 use Drupal\campaignmonitor\CampaignMonitor;
-
+use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 use Drupal\Core\Form\FormBase;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Render\Element;
+use Egulias\EmailValidator\EmailValidator;
 
 class SubscribeForm extends FormBase {
+
+  /**
+   * The email validator.
+   *
+   * @var \Egulias\EmailValidator\EmailValidator
+   */
+  protected $emailValidator;
+
+  /**
+   * The campaign monitor.
+   *
+   * @var \Drupal\campaignmonitor\CampaignMonitor
+   */
+  protected $campaignMonitor;
+
+
+  /**
+   * Constructs a new SubscribeForm.
+   */
+  public function __construct() {
+    $this->emailValidator = new EmailValidator;
+    $this->campaignMonitor = CampaignMonitor::GetConnector();
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public static function create(ContainerInterface $container) {
+    return new static();
+  }
+
   /** 
    * {@inheritdoc}
    */
@@ -29,7 +62,8 @@ class SubscribeForm extends FormBase {
 
     $form['email'] = array(
       '#title' => 'Email',
-      '#type' => 'textfield', 
+      '#type' => 'textfield',
+      '#required' => TRUE,
     );
     
     $form['lists'] = array(
@@ -65,17 +99,14 @@ class SubscribeForm extends FormBase {
         continue;
       }
       
-      $email_okay = \Drupal::service('email.validator')->isValid($values['email']);
-      if ($email_okay) {
-        $email = $values['email'];
-      }
-      else {
+      $email = trim($values['email']);
+      if (!$this->emailValidator->isValid($email)) {
         form_set_error('', t('Please submit a valid email address.'));
         $form_state['redirect'] = FALSE;
         return FALSE;
       }
 
-      $cm = CampaignMonitor::getConnector();
+      $cm = $this->campaignMonitor;
   
       // Update subscriber information or add new subscriber to the list.
       if (!$cm->subscribe($list_id, $email)) {
