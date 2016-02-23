@@ -157,7 +157,6 @@ class SettingsForm extends ConfigFormBase {
    * {@inheritdoc}
    */
   public function submitForm(array &$form, FormStateInterface $form_state) {
-    $config = $this->config('campaignmonitor.account');
     $values = $form_state->getValues();
 
     $this->config('campaignmonitor.account')
@@ -166,11 +165,11 @@ class SettingsForm extends ConfigFormBase {
       ->save();
 
     $this->config('campaignmonitor.general')
-      ->set('cache_timeout', $values['values']['campaignmonitor_general']['cache_timeout'])
-      ->set('library_path', $values['values']['campaignmonitor_general']['library_path'])
-      ->set('archive', $values['values']['campaignmonitor_general']['archive'])
-      ->set('logging', $values['values']['campaignmonitor_general']['logging'])
-      ->set('instructions', $values['values']['campaignmonitor_general']['instructions'])
+      ->set('cache_timeout', $values['campaignmonitor_general']['cache_timeout'])
+      ->set('library_path', $values['campaignmonitor_general']['library_path'])
+      ->set('archive', $values['campaignmonitor_general']['archive'])
+      ->set('logging', $values['campaignmonitor_general']['logging'])
+      ->set('instructions', $values['campaignmonitor_general']['instructions'])
       ->save();
 
     CampaignMonitor::getConnector()->clearCache();
