@@ -58,13 +58,23 @@ class SubscribeForm extends FormBase {
    * {@inheritdoc}
    */
   public function submitForm(array &$form, FormStateInterface $form_state) {
-    foreach($form_state['values']['lists'] as $list_id) {
+    $values = $form_state->getValues();
+    foreach($values['lists'] as $list_id) {
       
       if(!$list_id) {
         continue;
       }
       
-      $email = check_plain($form_state['values']['email']);
+      $email_okay = \Drupal::service('email.validator')->isValid($values['email']);
+      if ($email_okay) {
+        $email = $values['email'];
+      }
+      else {
+        form_set_error('', t('Please submit a valid email address.'));
+        $form_state['redirect'] = FALSE;
+        return FALSE;
+      }
+
       $cm = CampaignMonitor::getConnector();
   
       // Update subscriber information or add new subscriber to the list.
