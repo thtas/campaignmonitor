@@ -65,14 +65,23 @@ class SubscribeForm extends FormBase {
       '#type' => 'textfield',
       '#required' => TRUE,
     );
-    
-    $form['lists'] = array(
-      '#title' => 'Newsletters',
-      '#type' => 'checkboxes',
-      '#options' => $enabled_lists,
-      '#required' => TRUE,
-    );
-    
+
+    if (count($enabled_lists) > 1) {
+      $form['lists'] = array(
+        '#title' => 'Newsletters',
+        '#type' => 'checkboxes',
+        '#options' => $enabled_lists,
+        '#required' => TRUE,
+      );
+    }
+    // Hide if only one item.
+    else {
+      $form['lists'] = array(
+        '#type' => 'hidden',
+        '#value' => serialize($enabled_lists),
+      );
+    }
+
     $form['subscribe'] = array(
       '#type' => 'submit',
       '#value' => 'Subscribe'
@@ -85,7 +94,15 @@ class SubscribeForm extends FormBase {
    * {@inheritdoc}
    */
   public function validateForm(array &$form, FormStateInterface $form_state) {
+    $values = $form_state->getValues();
 
+    $email = trim($values['email']);
+    if (!$this->emailValidator->isValid($email)) {
+      $form_state->setErrorByName(
+        'email',
+        $this->t('Please submit a valid email address.')
+      );
+    }
   }
   
   /** 
@@ -93,25 +110,29 @@ class SubscribeForm extends FormBase {
    */
   public function submitForm(array &$form, FormStateInterface $form_state) {
     $values = $form_state->getValues();
-    foreach($values['lists'] as $list_id) {
+
+    $list = $values['lists'];
+    // Deal with case of single item (i.e. hidden field).
+    if (is_array($list) == FALSE) {
+      $list = unserialize($list);
+      $list = array_keys($list);
+    }
+
+    foreach($list as $list_id) {
       
       if(!$list_id) {
         continue;
       }
       
       $email = trim($values['email']);
-      if (!$this->emailValidator->isValid($email)) {
-        form_set_error('', t('Please submit a valid email address.'));
-        $form_state['redirect'] = FALSE;
-        return FALSE;
-      }
 
       $cm = $this->campaignMonitor;
-  
+
       // Update subscriber information or add new subscriber to the list.
       if (!$cm->subscribe($list_id, $email)) {
-        form_set_error('', t('You were not subscribed to the list, please try again.'));
-        $form_state['redirect'] = FALSE;
+        drupal_set_message(
+          $this->t('You were not subscribed to the list, please try again.')
+        );
         return FALSE;
       }
     
@@ -121,7 +142,10 @@ class SubscribeForm extends FormBase {
         drupal_goto($lists[$list_id]['details']['ConfirmationSuccessPage']);
       }
       else {
-        drupal_set_message(t('You are now subscribed to the "@list" list.', array('@list' => $lists[$list_id]['name'])), 'status');
+        drupal_set_message(
+          $this->t('You are now subscribed to the "@list" list.',
+            array('@list' => $lists[$list_id]['name'])),
+          'status');
       }    
     
     }    
