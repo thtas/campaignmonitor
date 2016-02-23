@@ -7,7 +7,7 @@
 
 namespace Drupal\campaignmonitor\Plugin\Block;
 
-use Drupal\block\BlockBase;
+use Drupal\Core\Block\BlockBase;
 use Drupal\Core\Block\BlockPluginInterface;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\campaignmonitor\CampaignMonitor;
@@ -52,9 +52,11 @@ class SubscribeBlock extends BlockBase implements BlockPluginInterface {
    * {@inheritdoc}
    */
   public function blockSubmit($form, FormStateInterface $form_state) {
+    $values = $form_state->getValues();
+
     // Save our custom settings when the form is submitted.
-    $this->setConfigurationValue('list_status', $form_state['values']['list_status']);
-    $this->setConfigurationValue('prefix', $form_state['values']['prefix']);
+    $this->setConfigurationValue('list_status', $values['list_status']);
+    $this->setConfigurationValue('prefix', $values['prefix']);
   }
 
   /**
