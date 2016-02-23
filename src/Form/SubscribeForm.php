@@ -20,12 +20,13 @@ class SubscribeForm extends FormBase {
    * {@inheritdoc}
    */
   public function buildForm(array $form, FormStateInterface $form_state) {
-    
+    $values = $form_state->getValues();
+
     $enabled_lists = array();
-    if(isset($form_state['build_info']['args'][0]['enabled_lists'])) {
-      $enabled_lists = $form_state['build_info']['args'][0]['enabled_lists'];
+    if(isset($values['enabled_lists'])) {
+      $enabled_lists = $values['enabled_lists'];
     }
-    
+
     $form['email'] = array(
       '#title' => 'eMail',
       '#type' => 'textfield', 
@@ -50,7 +51,7 @@ class SubscribeForm extends FormBase {
   /** 
    * {@inheritdoc}
    */
-  public function validateForm(array $form, FormStateInterface $form_state) {
+  public function validateForm(array &$form, FormStateInterface $form_state) {
 
   }
   
