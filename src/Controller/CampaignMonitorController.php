@@ -59,13 +59,20 @@ class CampaignMonitorController extends ControllerBase {
     $enabled_lists = array();
     foreach($list_status as $list_id => $enabled) {
       $enabled_lists[$list_id] = $lists[$list_id]['name'];
-    }    
+    }
+
+    // Prefix text.
+    $prefix = $this->settings['page_prefix'];
 
     $form = \Drupal::formBuilder()->getForm('Drupal\campaignmonitor\Form\SubscribeForm',
       array('enabled_lists' => $enabled_lists));
 
     return array(
-      '#markup' => $form,
+      '#type' => 'page',
+      'content' => array(
+        $prefix,
+        $form,
+      ),
     );
   }
 }
