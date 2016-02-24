@@ -136,10 +136,12 @@ class SettingsForm extends ConfigFormBase {
         '#description' => t('Create a signup page at "\newsletter".'),
         '#default_value' => $general->get('page'),
       );
+
+      $prefix_text = $general->get('page_prefix');
       $form['campaignmonitor_general']['page_prefix'] = array(
         '#type' => 'text_format',
         '#title' => t('Prefix text for signup page.'),
-        '#default_value' => $general->get('page_prefix'),
+        '#default_value' => $prefix_text['value'],
         '#format' => 'rich_text',
       );
 

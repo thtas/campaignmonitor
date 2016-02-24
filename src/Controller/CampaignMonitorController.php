@@ -49,30 +49,28 @@ class CampaignMonitorController extends ControllerBase {
   */
   public function content() {
     // If the page option isn't turned on, throw an access denied error.
-    if (!isset($this->settings['page'])) {
+    if (!isset($this->settings['page']) ||
+      ($this->settings['page'] == 0)) {
       throw new AccessDeniedHttpException();
     }
-            
+
     $cm = $this->campaignMonitor;
     $lists = $cm->getLists();
 
     $enabled_lists = array();
-    foreach($list_status as $list_id => $enabled) {
+    foreach($lists as $list_id => $enabled) {
       $enabled_lists[$list_id] = $lists[$list_id]['name'];
     }
 
     // Prefix text.
-    $prefix = $this->settings['page_prefix'];
+    $prefix = $this->settings['page_prefix']['value'];
 
     $form = \Drupal::formBuilder()->getForm('Drupal\campaignmonitor\Form\SubscribeForm',
       array('enabled_lists' => $enabled_lists));
 
     return array(
-      '#type' => 'page',
-      'content' => array(
-        $prefix,
-        $form,
-      ),
+      'prefix' => array('#markup' => $prefix),
+      'subscribe_form' => $form,
     );
   }
 }
