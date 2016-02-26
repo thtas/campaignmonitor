@@ -11,6 +11,7 @@ use Drupal\Core\Form\FormBuilder;
 use Drupal\Core\Form\FormStateInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
+use Drupal\Core\Config\ConfigFactory;
 use Drupal\Core\Url;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Drupal\campaignmonitor\CampaignMonitor;
@@ -32,17 +33,22 @@ class CampaignMonitorController extends ControllerBase {
   /**
    * Constructs a new SubscribeForm.
    */
-  public function __construct() {
+  public function __construct(ConfigFactory $configFactory, FormBuilder $formBuilder) {
     $this->campaignMonitor = CampaignMonitor::GetConnector();
-    $this->config_factory = \Drupal::service('config.factory');
-    $this->formBuilder = \Drupal::service('form_builder');
+    $this->config_factory = $configFactory;
+    $this->formBuilder = $formBuilder;
   }
 
   /**
    * {@inheritdoc}
    */
   public static function create(ContainerInterface $container) {
-    return new static();
+    $cf = \Drupal::service('config.factory');
+    $fb = \Drupal::service('form_builder');
+    return new static(
+      $cf,
+      $fb
+    );
   }
 
   /**
