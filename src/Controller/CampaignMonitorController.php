@@ -34,7 +34,8 @@ class CampaignMonitorController extends ControllerBase {
    */
   public function __construct() {
     $this->campaignMonitor = CampaignMonitor::GetConnector();
-    $this->settings = \Drupal::config('campaignmonitor.general')->get();
+    $this->config_factory = \Drupal::service('config.factory');
+    $this->formBuilder = \Drupal::service('form_builder');
   }
 
   /**
@@ -48,9 +49,11 @@ class CampaignMonitorController extends ControllerBase {
    * Constructs a page with a signup form.
   */
   public function content() {
+    $settings = $this->config_factory->get('campaignmonitor.general');
+    $page = $settings->get('page');
+
     // If the page option isn't turned on, throw an access denied error.
-    if (!isset($this->settings['page']) ||
-      ($this->settings['page'] == 0)) {
+    if ($page != TRUE) {
       throw new AccessDeniedHttpException();
     }
 
@@ -63,9 +66,10 @@ class CampaignMonitorController extends ControllerBase {
     }
 
     // Prefix text.
-    $prefix = $this->settings['page_prefix']['value'];
+    $prefix = $settings->get('page_prefix');
+    $prefix = $prefix['value'];
 
-    $form = \Drupal::formBuilder()->getForm('Drupal\campaignmonitor\Form\SubscribeForm',
+    $form = $this->formBuilder->getForm('Drupal\campaignmonitor\Form\SubscribeForm',
       array('enabled_lists' => $enabled_lists));
 
     return array(
