@@ -130,6 +130,21 @@ class SettingsForm extends ConfigFormBase {
         '#default_value' => $general->get('library_path'),
       );
 
+       $form['campaignmonitor_general']['page'] = array(
+        '#type' => 'checkbox',
+        '#title' => t('Enable signup page'),
+        '#description' => t('Create a signup page at "\newsletter".'),
+        '#default_value' => $general->get('page'),
+      );
+
+      $prefix_text = $general->get('page_prefix');
+      $form['campaignmonitor_general']['page_prefix'] = array(
+        '#type' => 'text_format',
+        '#title' => t('Prefix text for signup page.'),
+        '#default_value' => $prefix_text['value'],
+        '#format' => 'rich_text',
+      );
+
       $form['campaignmonitor_general']['archive'] = array(
         '#type' => 'checkbox',
         '#title' => t('Newsletter archive'),
@@ -191,6 +206,8 @@ class SettingsForm extends ConfigFormBase {
       ->set('cache_timeout', $values['campaignmonitor_general']['cache_timeout'])
       ->set('library_path', $values['campaignmonitor_general']['library_path'])
       ->set('archive', $values['campaignmonitor_general']['archive'])
+      ->set('page', $values['campaignmonitor_general']['page'])
+      ->set('page_prefix', $values['campaignmonitor_general']['page_prefix'])
       ->set('logging', $values['campaignmonitor_general']['logging'])
       ->set('instructions', $values['campaignmonitor_general']['instructions'])
       ->save();
