@@ -43,11 +43,9 @@ class CampaignMonitorController extends ControllerBase {
    * {@inheritdoc}
    */
   public static function create(ContainerInterface $container) {
-    $cf = \Drupal::service('config.factory');
-    $fb = \Drupal::service('form_builder');
     return new static(
-      $cf,
-      $fb
+      $container->get('config.factory'),
+      $container->get('form_builder')
     );
   }
 
