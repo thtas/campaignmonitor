@@ -62,15 +62,15 @@ class CampaignMonitor {
    * @param int $code
    *   Normally the HTTP response code.
    */
-  protected function addError($type, $message, $code = -1) {
+  protected function addError($message, $code = -1) {
     $this->errors[] = array(
-      'type' => $type,
+      'type' => 'Error',
       'code' => $code,
       'message' => t($message),
     );
     if ($this->logErrors) {
       $msg = t('Failed with code: @code and message: @msg', array('@code' => $code, '@msg' => $message));
-      \Drupal::logger('campaignmonitor')->log($type, $msg);      
+      \Drupal::logger('campaignmonitor')->error($msg);     
     }
   }
 
@@ -128,7 +128,7 @@ class CampaignMonitor {
       @require_once $this->libraryPath . '/' . $file;
       return TRUE;
     }
-    $this->addError(WATCHDOG_ERROR, t('Unable to load client library.'));
+    $this->addError(t('Unable to load client library.'));
     return FALSE;
   }
 
@@ -142,7 +142,7 @@ class CampaignMonitor {
     if ($this->libraryLoad(self::CampaignMonitorCLIENT)) {
       return new \CS_REST_Clients($this->client_id, $this->api_key);
     }
-    $this->addError(WATCHDOG_ERROR, t('Failed to locate the client library.'));
+    $this->addError(t('Failed to locate the client library.'));
     return FALSE;
   }
 
@@ -159,7 +159,7 @@ class CampaignMonitor {
     if ($this->libraryLoad(self::CampaignMonitorLIST)) {
       return new \CS_REST_Lists($listId, $this->api_key);
     }
-    $this->addError(WATCHDOG_ERROR, t('Failed to locate the list library.'));
+    $this->addError(t('Failed to locate the list library.'));
     return FALSE;
   }
 
@@ -176,7 +176,7 @@ class CampaignMonitor {
     if ($this->libraryLoad(self::CampaignMonitorSubscribers)) {
       return new \CS_REST_Subscribers($listId, $this->api_key);
     }
-    $this->addError(WATCHDOG_ERROR, t('Failed to locate the subscribers library.'));
+    $this->addError(t('Failed to locate the subscribers library.'));
     return FALSE;
   }
 
@@ -310,7 +310,7 @@ class CampaignMonitor {
             \Drupal::cache()->set('campaignmonitor_lists', $this->lists);
           }
           else {
-            $this->addError(WATCHDOG_ERROR, $result->response->Message, $result->http_status_code);
+            $this->addError($result->response->Message, $result->http_status_code);
           }
         }
         else {
@@ -342,7 +342,7 @@ class CampaignMonitor {
 
     // Test that the listId is valid.
     if (!isset($this->lists[$listId])) {
-      $this->addError(WATCHDOG_ERROR, t('Unknown list id @listID.', array('@listID' => $listId)));
+      $this->addError(t('Unknown list id @listID.', array('@listID' => $listId)));
       return FALSE;
     }
 
@@ -364,7 +364,7 @@ class CampaignMonitor {
           \Drupal::cache()->set('campaignmonitor_lists', $this->lists);
         }
         else {
-          $this->addError(WATCHDOG_ERROR, $result->response->Message, $result->http_status_code);
+          $this->addError($result->response->Message, $result->http_status_code);
           return FALSE;
         }
       }
@@ -396,7 +396,7 @@ class CampaignMonitor {
 
     // Test that the listId is valid.
     if (!isset($this->lists[$listId])) {
-      $this->addError(WATCHDOG_ERROR, t('Unknown list id @listID.', array('@listID' => $listId)));
+      $this->addError(t('Unknown list id @listID.', array('@listID' => $listId)));
       return FALSE;
     }
 
@@ -417,7 +417,7 @@ class CampaignMonitor {
           \Drupal::cache()->set('campaignmonitor_lists', $this->lists);
         }
         else {
-          $this->addError(WATCHDOG_ERROR, $result->response->Message, $result->http_status_code);
+          $this->addError($result->response->Message, $result->http_status_code);
         }
       }
       else {
@@ -448,14 +448,14 @@ class CampaignMonitor {
 
     // Test that the listId is valid.
     if (!isset($this->lists[$listId])) {
-      $this->addError(WATCHDOG_ERROR, t('Unknown list id @listID.', array('@listID' => $listId)));
+      $this->addError(t('Unknown list id @listID.', array('@listID' => $listId)));
       return FALSE;
     }
 
     // Load list details and custom fields (using is_array() since
     // getCustomFields() may return an empty array).
     if (!$this->getListDetails($listId) || !is_array($this->getCustomFields($listId))) {
-      $this->addError(WATCHDOG_ERROR, t('Could not retrieve extended information for @listID.', array('@listID' => $listId)));
+      $this->addError(t('Could not retrieve extended information for @listID.', array('@listID' => $listId)));
       return FALSE;
     }
 
@@ -478,7 +478,7 @@ class CampaignMonitor {
   public function updateList($listId, $options = array()) {
     // Make sure that list is loaded.
     if (!$this->getListDetails($listId)) {
-      $this->addError(WATCHDOG_ERROR, t('Could not retrieve update list information for @listID.', array('@listID' => $listId)));
+      $this->addError(t('Could not retrieve update list information for @listID.', array('@listID' => $listId)));
       return FALSE;
     }
 
@@ -499,7 +499,7 @@ class CampaignMonitor {
         return TRUE;
       }
       else {
-        $this->addError(WATCHDOG_ERROR, $result->response->Message, $result->http_status_code);
+        $this->addError($result->response->Message, $result->http_status_code);
       }
     }
     return FALSE;
@@ -545,7 +545,7 @@ class CampaignMonitor {
           \Drupal::cache()->set('campaignmonitor_list_stats', $this->listStats, $this->getCacheTimeout());
         }
         else {
-          $this->addError(WATCHDOG_ERROR, $result->response->Message, $result->http_status_code);
+          $this->addError($result->response->Message, $result->http_status_code);
           return FALSE;
         }
       }
@@ -576,7 +576,7 @@ class CampaignMonitor {
         return TRUE;
       }
       else {
-        $this->addError(WATCHDOG_ERROR, $result->response->Message, $result->http_status_code);
+        $this->addError($result->response->Message, $result->http_status_code);
         return FALSE;
       }
     }
@@ -615,7 +615,7 @@ class CampaignMonitor {
         return TRUE;
       }
       else {
-        $this->addError(WATCHDOG_ERROR, $result->response->Message, $result->http_status_code);
+        $this->addError($result->response->Message, $result->http_status_code);
         return FALSE;
       }
     }
@@ -663,7 +663,7 @@ class CampaignMonitor {
             \Drupal::cache()->set('campaignmonitor_campaigns', $this->campaigns, $this->getCacheTimeout());
           }
           else {
-            $this->addError(WATCHDOG_ERROR, $result->response->Message, $result->http_status_code);
+            $this->addError($result->response->Message, $result->http_status_code);
             return FALSE;
           }
         }
@@ -738,7 +738,7 @@ class CampaignMonitor {
           \Drupal::cache()->set('campaignmonitor_subscribers', $this->subscribers, $this->getCacheTimeout());
         }
         else {
-          $this->addError(WATCHDOG_ERROR, $result->response->Message, $result->http_status_code);
+          $this->addError($result->response->Message, $result->http_status_code);
           return array();
         }
       }
@@ -820,7 +820,7 @@ class CampaignMonitor {
         'Resubscribe' => TRUE,
       ));
       if (!$result->was_successful()) {
-        $this->addError(WATCHDOG_ERROR, $result->response->Message, $result->http_status_code);
+        $this->addError($result->response->Message, $result->http_status_code);
         return FALSE;
       }
       $this->removeSubscriberFromCache($listId, $email);
@@ -844,7 +844,7 @@ class CampaignMonitor {
     if ($obj = $this->createSubscriberObj($listId)) {
       $result = $obj->unsubscribe($email);
       if (!$result->was_successful()) {
-        $this->addError(WATCHDOG_ERROR, $result->response->Message, $result->http_status_code);
+        $this->addError($result->response->Message, $result->http_status_code);
         return FALSE;
       }
       $this->removeSubscriberFromCache($listId, $email);
@@ -870,7 +870,7 @@ class CampaignMonitor {
         'Resubscribe' => TRUE,
       ));
       if (!$result->was_successful()) {
-        $this->addError(WATCHDOG_ERROR, $result->response->Message, $result->http_status_code);
+        $this->addError($result->response->Message, $result->http_status_code);
         return FALSE;
       }
       // Remove the old e-mail address from the subscriber cache.

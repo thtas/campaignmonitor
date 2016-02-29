@@ -5,3 +5,11 @@ campaignmonitor.settings:
     _title: 'Campaign Monitor Settings'
   requirements:
     _permission: 'administer campaignmonitor'
+
+campaignmonitor.signup:
+  path: '/newsletter'
+  defaults:
+    _controller: '\Drupal\campaignmonitor\Controller\CampaignMonitorController::content'
+    _title: 'Newsletter Signup'
+  requirements:
+    _permission: 'access content'

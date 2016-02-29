@@ -1,21 +1,2 @@
 <?php
 
-/**
- * Implements hook_permission().
- */
-function campaignmonitor_permission() {
-  return array(
-    'administer campaignmonitor' => array(
-      'title' => t('Administer Campaign Monitor'),
-      'description' => t('Administer Campaign Monitor settings.'),
-    ),
-    'access archive' => array(
-      'title' => t('Access newsletter archive'),
-      'description' => t('Access newsletter achive'),
-    ),
-    'join newsletter' => array(
-      'title' => t('Join newsletters'),
-      'description' => t('Join newsletters'),
-    ),
-  );
-}
